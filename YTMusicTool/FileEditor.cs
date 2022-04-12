@@ -34,7 +34,7 @@ namespace YTMusicTool
             OriginalName = OriginalFileName[..OriginalFileName.LastIndexOf('.')];
 
             var file = new TagLib.Mpeg.AudioFile($"{OutputDirectory}\\{OriginalFileName}");
-            OriginalArtist = file.Tag.FirstAlbumArtist;
+            OriginalArtist = file.Tag.FirstArtist;
             OriginalGenre = file.Tag.FirstGenre;
             OriginalAlbum = file.Tag.Album;
 
@@ -71,20 +71,20 @@ namespace YTMusicTool
 
         private void SaveAndExit()
         {
+            var finalOriginalFileName = $"{OutputDirectory}\\{OriginalFileName}";
             var finalFileName = $"{OutputDirectory}\\{fileNameTextBox.Text}";
 
-            if (!System.IO.File.Exists(finalFileName))
-            {
-                TagLib.File.Create($"{OutputDirectory}\\{fileNameTextBox.Text}");
-            }
+            var file = new TagLib.Mpeg.AudioFile(finalOriginalFileName);
 
-            var file = new TagLib.Mpeg.AudioFile($"{OutputDirectory}\\{fileNameTextBox.Text}");
-
+            file.Tag.Title = nameTextBox.Text;
             file.Tag.AlbumArtists = new[] { artistTextBox.Text };
+            file.Tag.Artists = new[] { artistTextBox.Text };
             file.Tag.Genres = new[] { genreTextBox.Text };
             file.Tag.Album = albumTextBox.Text;
 
             file.Save();
+
+            System.IO.File.Move(finalOriginalFileName, finalFileName);
 
             this.Close();
         }
