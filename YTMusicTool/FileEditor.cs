@@ -31,7 +31,7 @@ namespace YTMusicTool
 
             OutputDirectory = dirPath;
             OriginalFileName = fileName;
-            OriginalName = OriginalFileName[^4..];
+            OriginalName = OriginalFileName[..OriginalFileName.LastIndexOf('.')];
 
             var file = new TagLib.Mpeg.AudioFile($"{OutputDirectory}\\{OriginalFileName}");
             OriginalArtist = file.Tag.FirstAlbumArtist;
@@ -51,7 +51,7 @@ namespace YTMusicTool
             artistTextBox.Text = TextInfo.ToTitleCase(artistTextBox.Text.Trim());
             albumTextBox.Text = TextInfo.ToTitleCase(albumTextBox.Text.Trim());
             genreTextBox.Text = TextInfo.ToTitleCase(genreTextBox.Text.Trim());
-            fileNameTextBox.Text = TextInfo.ToTitleCase(fileNameTextBox.Text.Trim());
+            fileNameTextBox.Text = TextInfo.ToTitleCase(nameTextBox.Text.Trim() + ".mp3");
         }
 
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -71,6 +71,13 @@ namespace YTMusicTool
 
         private void SaveAndExit()
         {
+            var finalFileName = $"{OutputDirectory}\\{fileNameTextBox.Text}";
+
+            if (!System.IO.File.Exists(finalFileName))
+            {
+                TagLib.File.Create($"{OutputDirectory}\\{fileNameTextBox.Text}");
+            }
+
             var file = new TagLib.Mpeg.AudioFile($"{OutputDirectory}\\{fileNameTextBox.Text}");
 
             file.Tag.AlbumArtists = new[] { artistTextBox.Text };
