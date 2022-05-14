@@ -12,7 +12,7 @@ namespace YTMusicTool
             if (!string.IsNullOrWhiteSpace(dirPathTextBox.Text))
             {
                 DirectoryInfo folder = new DirectoryInfo(dirPathTextBox.Text);
-                foreach (FileInfo file in folder.GetFiles())
+                foreach (FileInfo file in folder.GetFiles("*.mp3"))
                 {
                     var fileEditor = new FileEditor(folder.FullName, file.Name);
                     fileEditor.ShowDialog();
